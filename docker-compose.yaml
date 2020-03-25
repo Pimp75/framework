@@ -1,0 +1,20 @@
+version: "3.3"
+
+services:
+    web:
+        image: nginx:latest
+        container_name: nginx
+        ports:
+        - "8080:80"
+        volumes:
+          - ./www:/var/www/html
+          - ./provision/nginx/site.conf:/etc/nginx/conf.d/default.conf
+        links:
+          - php
+    php:
+        build: provision/php
+        container_name: php
+        working_dir: /app
+        user: php
+        volumes:
+          - ./www:/var/www/html
