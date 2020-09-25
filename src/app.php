@@ -31,10 +31,4 @@ $routes->add('leap_year', new Route('/is_leap_year/{year}', [
     '_controller' => [new LeapYearController(), 'index']
 ]));
 
-$routes->add('hello', new Route('/hello/{name}', [
-    'name' => 'World',
-    '_controller' => 'render_template'
-]));
-$routes->add('bye', new Route('/bye', ['_controller' => 'render_template']));
-
 return $routes;

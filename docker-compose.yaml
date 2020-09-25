@@ -9,7 +9,7 @@ services:
         networks:
           - backend
         ports:
-          - "8001:80"
+          - "8010:80"
         volumes:
           - .:/var/www/html
           - ./provision/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
