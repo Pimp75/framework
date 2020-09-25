@@ -2,6 +2,7 @@
 
 namespace Pimp;
 
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolver;
@@ -20,11 +21,19 @@ class Framework
     /** @var ArgumentResolver */
     private $argumentResolver;
 
-    public function __construct(UrlMatcher $matcher, ControllerResolver $controllerResolver, ArgumentResolver $argumentResolver)
-    {
+    /** @var EventDispatcher */
+    private $dispatcher;
+
+    public function __construct(
+        UrlMatcher $matcher,
+        ControllerResolver $controllerResolver,
+        ArgumentResolver $argumentResolver,
+        EventDispatcher $dispatcher
+    ) {
         $this->matcher = $matcher;
         $this->controllerResolver = $controllerResolver;
         $this->argumentResolver = $argumentResolver;
+        $this->dispatcher = $dispatcher;
     }
 
     public function handle(Request $request): Response
@@ -43,6 +52,9 @@ class Framework
         } catch (\Exception $exception) {
             $response = new Response('An error occurred', 500);
         }
+
+        // dispatch a response event
+        $this->dispatcher->dispatch(new ResponseEvent($response, $request), 'response');
 
         return $response;
     }
