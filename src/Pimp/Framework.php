@@ -40,7 +40,7 @@ class Framework
             $response = call_user_func($controller, $arguments);
         } catch (ResourceNotFoundException $exception) {
             $response = new Response('Not Found', 404);
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             $response = new Response('An error occurred', 500);
         }
 
