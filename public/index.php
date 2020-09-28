@@ -8,7 +8,8 @@ use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\HttpKernel\Controller\ControllerResolver;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolver;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-
+use Symfony\Component\HttpKernel\HttpCache\HttpCache;
+use Symfony\Component\HttpKernel\HttpCache\Store;
 use Pimp\Framework;
 use Pimp\ContentLengthListener;
 use Pimp\GoogleListener;
@@ -18,6 +19,7 @@ $routes = include __DIR__.'/../src/app.php';
 
 $context = new RequestContext();
 $matcher = new UrlMatcher($routes, $context);
+
 $dispatcher = new EventDispatcher();
 $dispatcher->addSubscriber(new ContentLengthListener());
 $dispatcher->addSubscriber( new GoogleListener());
@@ -26,6 +28,8 @@ $controllerResolver = new ControllerResolver();
 $argumentResolver = new ArgumentResolver();
 
 $framework = new Framework($matcher, $controllerResolver, $argumentResolver, $dispatcher);
+
+$framework = new HttpCache($framework, new Store(__DIR__.'../var/cache'));
 
 $response = $framework->handle($request);
 $response->send();
