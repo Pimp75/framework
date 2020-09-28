@@ -3,17 +3,14 @@
 require_once __DIR__.'/../vendor/autoload.php';
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\HttpCache\HttpCache;
-use Symfony\Component\HttpKernel\HttpCache\Store;
-use Pimp\Framework;
+
+$container = include __DIR__.'/../src/container.php';
+$container->setParameter('charset', 'UTF-8');
+
+$container->setParameter('routes', include __DIR__.'/../src/app.php');
 
 $request = Request::createFromGlobals();
 
-$routes = include __DIR__.'/../src/app.php';
+$response = $container->get('framework')->handle($request);
 
-$framework = new Framework($routes);
-
-$framework = new HttpCache($framework, new Store(__DIR__.'../var/cache'));
-
-$response = $framework->handle($request);
 $response->send();
